@@ -13,15 +13,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean   @default(false)
-  image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
+  id                  String               @id
+  name                String
+  email               String
+  emailVerified       Boolean              @default(false)
+  image               String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  sessions            Session[]
+  accounts            Account[]
+  gitHubInstallations GitHubInstallation[]
 
   @@unique([email])
   @@map("user")
@@ -73,4 +74,62 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+model GitHubInstallation {
+  id                   String             @id @default(cuid())
+  githubInstallationId String             @unique
+  targetId             String
+  targetLogin          String
+  targetType           String
+  repositorySelection  String
+  status               String             @default("ACTIVE")
+  userId               String?
+  user                 User?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  repositories         GitHubRepository[]
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([userId])
+}
+
+model GitHubRepository {
+  id                 String              @id @default(cuid())
+  githubRepositoryId String              @unique
+  nodeId             String
+  owner              String
+  name               String
+  fullName           String
+  private            Boolean
+  defaultBranch      String
+  indexStatus        String              @default("NOT_INDEXED")
+  indexedAt          DateTime?
+  installationId     String
+  installation       GitHubInstallation  @relation(fields: [installationId], references: [id], onDelete: Cascade)
+  pullRequestReviews PullRequestReview[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([installationId])
+}
+
+model PullRequestReview {
+  id                 String            @id @default(cuid())
+  githubPrNumber     Int
+  githubRepositoryId String
+  repositoryId       String?
+  repository         GitHubRepository? @relation(fields: [repositoryId], references: [id], onDelete: SetNull)
+  owner              String
+  repoName           String
+  fullName           String
+  title              String
+  author             String
+  prUrl              String
+  status             String            @default("PENDING")
+  reviewBody         String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  @@unique([githubRepositoryId, githubPrNumber])
+  @@index([repositoryId])
 }

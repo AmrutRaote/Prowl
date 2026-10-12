@@ -41,7 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
-
+prowl-rev.2026-10-10.private-key.pem
 
 learn1.md
 learn2.md

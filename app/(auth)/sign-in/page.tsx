@@ -1,3 +1,4 @@
+export const instant = false;
 
 import { requireUnAuth } from "@/features/auth/actions";
 import { GithubSignInButton } from "@/features/auth/components/github-sign-in-button";

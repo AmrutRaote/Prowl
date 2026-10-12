@@ -7,7 +7,7 @@ import { redirect } from "next/navigation"
 
 async function getSession() {
   return auth.api.getSession({
-    headers: await headers(),
+    headers: new Headers(await headers()),
   });
 }
 

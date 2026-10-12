@@ -2,6 +2,7 @@ import { auth } from "./lib/auth";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server"
 import {  AUTH_ROUTES, GUEST_ONLY_ROUTES, PROTECTED_ROUTES, } from "./features/auth/lib/route";
+import { appUrl } from "./lib/app-url";
 
 
 export async function proxy(request: NextRequest) {
@@ -15,11 +16,11 @@ export async function proxy(request: NextRequest) {
   const isGuestOnly = GUEST_ONLY_ROUTES.includes(pathname);
 
   if (isProtected && !session) {
-    return NextResponse.redirect(new URL(AUTH_ROUTES.signIn));
+    return NextResponse.redirect(appUrl(AUTH_ROUTES.signIn));
   }
 
   if (isGuestOnly && session) {
-    return NextResponse.redirect(new URL(AUTH_ROUTES.home));
+    return NextResponse.redirect(appUrl(AUTH_ROUTES.home));
   }
 
   return NextResponse.next();

@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  allowedDevOrigins: ["bursate-nonnotably-amina.ngrok-free.dev"]
 };
 
 export default nextConfig;
