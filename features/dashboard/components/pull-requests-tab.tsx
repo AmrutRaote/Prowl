@@ -1,6 +1,6 @@
 "use client";
 
-// import { ReviewMarkdown } from "@/components/review-markdown";
+import { ReviewMarkdown } from "@/components/review-markdown";
 import {
   Collapsible,
   CollapsibleContent,
@@ -119,28 +119,28 @@ function PullRequestCard({
 
       <CollapsibleContent className="border-t px-4 pb-4 pt-3">
         {
-          // hasReview ? (
-          //   <div className="rounded-xl border bg-muted/20 p-4">
-          //     <ReviewMarkdown
-          //       content={review.reviewBody!}
-          //       isAnimating={isReviewing}
-          //     />
-          //   </div>
-          // )
-          //   :
-          isReviewing ? (
-            <p className="text-sm text-muted-foreground">
-              Prowl is generating the review...
-            </p>
-          ) : review.status === "FAILED" ? (
-            <p className="text-sm text-destructive">
-              Review failed. Push a new commit or reopen the PR to retry.
-            </p>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              No review content yet.
-            </p>
-          )}
+          hasReview ? (
+            <div className="rounded-xl border bg-muted/20 p-4">
+              <ReviewMarkdown
+                content={review.reviewBody!}
+                isAnimating={isReviewing}
+              />
+            </div>
+          )
+            :
+            isReviewing ? (
+              <p className="text-sm text-muted-foreground">
+                Prowl is generating the review...
+              </p>
+            ) : review.status === "FAILED" ? (
+              <p className="text-sm text-destructive">
+                Review failed. Push a new commit or reopen the PR to retry.
+              </p>
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No review content yet.
+              </p>
+            )}
       </CollapsibleContent>
     </Collapsible>
   );
