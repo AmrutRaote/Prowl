@@ -1,3 +1,4 @@
+import { ContactLinks } from "@/components/contact-links";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 
@@ -10,6 +11,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <div className="w-full max-w-sm rounded-2xl border border-border bg-white p-8 dark:bg-zinc-950">
                 {children}
             </div>
+            <ContactLinks className="absolute inset-x-0 bottom-4" />
         </div>
     );
 }

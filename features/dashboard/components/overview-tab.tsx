@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
+import { ContributionGraph } from "./contribution-graph";
 
 type User = {
   name: string;
@@ -151,6 +152,10 @@ export function OverviewTab({ user }: { user: User }) {
               )}
             </section>
           </div>
+
+          <section className="rounded-2xl border bg-background p-5">
+            <ContributionGraph />
+          </section>
         </>
       )}
     </div>

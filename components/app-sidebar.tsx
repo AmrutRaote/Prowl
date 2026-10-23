@@ -3,6 +3,7 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -12,6 +13,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { ContactLinks } from "@/components/contact-links"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   DashboardSquare01Icon,
@@ -91,6 +93,9 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <ContactLinks />
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   )

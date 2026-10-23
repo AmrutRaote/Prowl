@@ -1,4 +1,4 @@
-import { generatePrReview } from "@/lib/claude-review";
+import { generatePrReview } from "@/lib/pr-review";
 import prisma from "@/lib/db";
 import { embedTexts } from "@/lib/openai";
 import { index } from "@/lib/pinecone";

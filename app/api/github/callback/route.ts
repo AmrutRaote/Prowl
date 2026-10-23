@@ -1,4 +1,3 @@
-import { Octokit } from "@octokit/rest";
 import prisma from "@/lib/db";
 import { appUrl } from "@/lib/app-url";
 import { NextRequest, NextResponse } from "next/server";
