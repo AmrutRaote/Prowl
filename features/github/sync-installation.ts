@@ -82,5 +82,6 @@ export async function syncInstallation(
         installationId: savedInstallation.id,
       })),
     });
-  });
+    // Defaults are maxWait 2s / timeout 5s, too tight for a remote DB (P2028).
+  }, { maxWait: 15_000, timeout: 30_000 });
 }
