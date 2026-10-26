@@ -1,7 +1,6 @@
 import { inngest } from "@/inngest/client";
 import { auth } from "@/lib/auth";
-import prisma from "@/lib/db";
-import { headers } from "next/headers";
+import prisma from "@/lib/db";import { headers } from "next/headers";
 
 export async function POST(
   _request: Request,
@@ -26,6 +25,25 @@ export async function POST(
 
   if (!repository) {
     return Response.json({ error: "Repository not found" }, { status: 404 });
+  }
+
+  if (repository.indexStatus === "NOT_INDEXED") {
+    const used = await prisma.gitHubRepository.count({
+      where: {
+        installation: { userId: session.user.id },
+        indexStatus: { not: "NOT_INDEXED" },
+      },
+    });
+    const user = await prisma.user.findUniqueOrThrow({
+      where: { id: session.user.id },
+      select: { maxRepos: true },
+    });
+    if (used >= user.maxRepos) {
+      return Response.json(
+        { error: `Limit reached: you can connect up to ${user.maxRepos} repositories` },
+        { status: 403 },
+      );
+    }
   }
 
   await prisma.gitHubRepository.update({

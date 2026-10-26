@@ -11,15 +11,20 @@ export async function GET() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const reviews = await prisma.pullRequestReview.findMany({
-    where: {
-      repository: {
-        installation: { userId: session.user.id },
-      },
-    },
-    orderBy: { updatedAt: "desc" },
-    take: 50,
-  });
+  const where = { repository: { installation: { userId: session.user.id } } };
 
-  return Response.json({ reviews });
+  const [reviews, used, user] = await Promise.all([
+    prisma.pullRequestReview.findMany({
+      where,
+      orderBy: { updatedAt: "desc" },
+      take: 50,
+    }),
+    prisma.pullRequestReview.count({ where }),
+    prisma.user.findUniqueOrThrow({
+      where: { id: session.user.id },
+      select: { maxPrReviews: true },
+    }),
+  ]);
+
+  return Response.json({ reviews, limitReached: used >= user.maxPrReviews });
 }

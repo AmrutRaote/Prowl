@@ -176,6 +176,13 @@ export function PullRequestsTab() {
         <p className="mt-1 text-sm text-muted-foreground">
           Prowl reviews PRs automatically when they are opened or updated.
         </p>
+        {data?.limitReached && (
+          <p className="mt-2 text-sm text-amber-600 dark:text-amber-400">
+            AI is expensive these days. You&apos;ve used up your free
+            reviews, and our GPU bill is crying. Prowl is now on a strict diet
+            of vibes only.
+          </p>
+        )}
       </div>
 
       {isLoading ? (

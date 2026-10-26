@@ -13,29 +13,38 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const search = searchParams.get("search") ?? "";
-  const cursor = searchParams.get("cursor");
-  const limit = 20;
+  const mine = { installation: { userId: session.user.id } };
 
-  const repositories = await prisma.gitHubRepository.findMany({
-    where: {
-      installation: { userId: session.user.id },
-      ...(search
-        ? { fullName: { contains: search, mode: "insensitive" } }
-        : {}),
-    },
-    take: limit + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    orderBy: { fullName: "asc" },
-    include: {
-      installation: {
-        select: { targetLogin: true },
-      },
-    },
+  const { maxRepos } = await prisma.user.findUniqueOrThrow({
+    where: { id: session.user.id },
+    select: { maxRepos: true },
   });
 
-  const hasMore = repositories.length > limit;
-  const items = hasMore ? repositories.slice(0, limit) : repositories;
-  const nextCursor = hasMore ? items[items.length - 1]?.id : null;
+  // Only the top `maxRepos` are shown; already-indexed repos sort first
+  // (FAILED < INDEXED < INDEXING < NOT_INDEXED) so they never get hidden.
+  const [repositories, total] = await Promise.all([
+    prisma.gitHubRepository.findMany({
+      where: {
+        ...mine,
+        ...(search
+          ? { fullName: { contains: search, mode: "insensitive" } }
+          : {}),
+      },
+      take: maxRepos,
+      orderBy: [{ indexStatus: "asc" }, { fullName: "asc" }],
+      include: {
+        installation: {
+          select: { targetLogin: true },
+        },
+      },
+    }),
+    prisma.gitHubRepository.count({ where: mine }),
+  ]);
 
-  return Response.json({ repositories: items, nextCursor });
+  return Response.json({
+    repositories,
+    nextCursor: null,
+    maxRepos,
+    hiddenCount: Math.max(0, total - maxRepos),
+  });
 }

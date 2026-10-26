@@ -110,6 +110,7 @@ export function RepositoriesTab() {
       },
     });
 
+  const { hiddenCount = 0, maxRepos } = data?.pages[0] ?? {};
   const repositories =
     data?.pages.flatMap((page) => page.repositories as Repository[]) ?? [];
 
@@ -140,6 +141,14 @@ export function RepositoriesTab() {
           All repos from your connected GitHub App installations.
         </p>
       </div>
+
+      {hiddenCount > 0 && (
+        <p className="text-sm text-amber-600 dark:text-amber-400">
+          Easy there, repo collector! You can only add {maxRepos}{" "}
+          repos. The other {hiddenCount} are hiding until Prowl
+          wins the lottery.
+        </p>
+      )}
 
       <Input
         type="search"

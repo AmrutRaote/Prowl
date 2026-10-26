@@ -18,6 +18,8 @@ model User {
   email               String
   emailVerified       Boolean              @default(false)
   image               String?
+  maxRepos            Int                  @default(2)
+  maxPrReviews        Int                  @default(4)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
   sessions            Session[]

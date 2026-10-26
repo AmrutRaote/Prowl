@@ -1,7 +1,6 @@
 import { createHmac, timingSafeEqual } from "crypto";
 import { inngest } from "@/inngest/client";
-import prisma from "@/lib/db";
-import { syncInstallation } from "@/features/github/sync-installation";
+import prisma from "@/lib/db";import { syncInstallation } from "@/features/github/sync-installation";
 
 export async function POST(request: Request) {
   const body = await request.text();
@@ -60,6 +59,36 @@ export async function POST(request: Request) {
     const action = payload.action;
 
     if (["opened", "synchronize", "reopened"].includes(action)) {
+      const githubRepositoryId = String(payload.repository.id);
+      const repository = await prisma.gitHubRepository.findUnique({
+        where: { githubRepositoryId },
+        select: {
+          installation: {
+            select: { userId: true, user: { select: { maxPrReviews: true } } },
+          },
+        },
+      });
+      const userId = repository?.installation.userId;
+      const maxPrReviews = repository?.installation.user?.maxPrReviews ?? 0;
+
+      // Re-reviews of an already-counted PR are free; only new PRs consume quota.
+      if (userId) {
+        const existing = await prisma.pullRequestReview.findUnique({
+          where: {
+            githubRepositoryId_githubPrNumber: {
+              githubRepositoryId,
+              githubPrNumber: payload.pull_request.number,
+            },
+          },
+        });
+        const used = await prisma.pullRequestReview.count({
+          where: { repository: { installation: { userId } } },
+        });
+        if (!existing && used >= maxPrReviews) {
+          return Response.json({ ok: true, skipped: "review limit reached" });
+        }
+      }
+
       await inngest.send({
         name: "pr/review.requested",
         data: {

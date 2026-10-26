@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "user" ADD COLUMN     "maxPrReviews" INTEGER NOT NULL DEFAULT 4,
+ADD COLUMN     "maxRepos" INTEGER NOT NULL DEFAULT 2;
