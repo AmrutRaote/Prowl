@@ -13,12 +13,12 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import Image from "next/image"
 import { ContactLinks } from "@/components/contact-links"
 import { HugeiconsIcon } from "@hugeicons/react"
 import {
   DashboardSquare01Icon,
   GitBranchIcon,
-  LayoutBottomIcon,
   RepositoryIcon,
   Settings05Icon,
 } from "@hugeicons/core-free-icons"
@@ -62,9 +62,13 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                <HugeiconsIcon icon={LayoutBottomIcon} strokeWidth={2} className="size-4" />
-              </div>
+              <Image
+                src="/prowl-logo.png"
+                alt="Prowl"
+                width={32}
+                height={32}
+                className="size-10 object-contain"
+              />
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-medium">Prowl</span>
                 <span className="text-xs">Dashboard</span>
